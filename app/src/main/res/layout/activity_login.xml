@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/email_input_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="253dp"
@@ -14,13 +14,13 @@
         android:hint="@string/email_field_hint"
         android:autofillHints="@string/email_field_hint"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/editText2"
+        app:layout_constraintBottom_toTopOf="@+id/pwd_input_login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/pwd_input_login"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginTop="21dp"
@@ -31,7 +31,7 @@
         app:layout_constraintBottom_toTopOf="@+id/login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText" />
+        app:layout_constraintTop_toBottomOf="@+id/email_input_login" />
 
     <Button
         android:id="@+id/login_button"
@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toTopOf="@+id/register_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editText2" />
+        app:layout_constraintTop_toBottomOf="@+id/pwd_input_login" />
 
     <Button
         android:id="@+id/register_button"

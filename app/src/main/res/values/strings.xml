@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CuteTogether</string>
+    <string name="login_btn">Login</string>
+    <string name="register_btn">Register</string>
+    <string name="email_field_hint">Email</string>
+    <string name="pwd_field_hint">Password</string>
+    <string name="name_input_register">Name</string>
 </resources>

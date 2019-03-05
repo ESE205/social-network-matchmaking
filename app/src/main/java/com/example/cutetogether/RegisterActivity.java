@@ -16,6 +16,8 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -25,6 +27,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText mPassword;
     private Button mRegister;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore db;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
 
         mUsername = findViewById(R.id.username_input_register);
         mEmail = findViewById(R.id.email_input_register);

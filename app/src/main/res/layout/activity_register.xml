@@ -52,7 +52,6 @@
         android:ems="10"
         android:hint="@string/pwd_field_hint"
         android:inputType="textPassword"
-        app:layout_constraintBottom_toTopOf="@+id/register_btn_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/confirm_email_input_register" />
@@ -61,11 +60,46 @@
         android:id="@+id/register_btn_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
+        android:layout_marginTop="36dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/register_btn"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pwd_input_register"
+        app:layout_constraintTop_toBottomOf="@+id/register_spinner_gender"
         tools:text="@string/register_btn" />
+
+    <EditText
+        android:id="@+id/register_et_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="34dp"
+        android:ems="10"
+        android:hint="City"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/pwd_input_register" />
+
+    <EditText
+        android:id="@+id/register_et_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="44dp"
+        android:ems="10"
+        android:hint="Age"
+        android:inputType="number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_et_city" />
+
+    <Spinner
+        android:id="@+id/register_spinner_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="29dp"
+        android:entries="@array/genders"
+        app:layout_constraintTop_toBottomOf="@+id/register_et_age"
+        tools:layout_editor_absoluteX="68dp" />
 </android.support.constraint.ConstraintLayout>

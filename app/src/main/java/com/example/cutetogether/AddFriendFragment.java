@@ -1,13 +1,16 @@
 package com.example.cutetogether;
 
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.EditText;
-import android.widget.TextView;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -15,20 +18,24 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.model.Document;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
-public class friendActivity extends AppCompatActivity {
 
-    EditText mSearch;
-    RecyclerView mFriendList;
+/**
+ * A simple {@link Fragment} subclass.
+ * Activities that contain this fragment must implement the
+ * {@link AddFriendFragment.OnFragmentInteractionListener} interface
+ * to handle interaction events.
+ */
+public class AddFriendFragment extends Fragment {
+
+    private OnFragmentInteractionListener mListener;
+
     RecyclerView mAddFriendList;
-    private static final String TAG = "friendActivity";
     ArrayList<String> friends = new ArrayList<String>();
     ArrayList<String> img_urls = new ArrayList<String>();
     ArrayList<String> nonfriends = new ArrayList<String>();
@@ -39,17 +46,21 @@ public class friendActivity extends AppCompatActivity {
     private FirebaseUser user = mAuth.getCurrentUser();
     private StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
 
+    private static final String TAG = "AddFriendFragment";
+
+    public AddFriendFragment() {
+        // Required empty public constructor
+    }
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friend);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_add_friend, container, false);
 
-        Log.d(TAG, "onCreate: started");
 
-        mSearch = findViewById(R.id.edittext_friend);
-        mFriendList = findViewById(R.id.recycler_view_friend);
-        mAddFriendList = findViewById(R.id.friend_rec_add);
+        mAddFriendList = view.findViewById(R.id.frag_friend_add_rv1);
 
         db.collection("users").document(user.getUid()).collection("friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -87,21 +98,41 @@ public class friendActivity extends AppCompatActivity {
             }
         });
 
-        //initRecyclerView();
+
+        return view;
+
+    }
 
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
+
+    public interface OnFragmentInteractionListener {
 
     }
 
     private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: started");
 
-        FriendListAdapter adapter = new FriendListAdapter(friends, img_urls, this);
-        AddFriendListAdapter adapter2 = new AddFriendListAdapter(nonfriends, img_urls, nfid, this);
-        mFriendList.setAdapter(adapter);
+        Context context = getContext();
+        AddFriendListAdapter adapter2 = new AddFriendListAdapter(nonfriends, img_urls, nfid, context);
         mAddFriendList.setAdapter(adapter2);
-        mAddFriendList.setLayoutManager(new LinearLayoutManager(this));
-        mFriendList.setLayoutManager(new LinearLayoutManager(this));
+        mAddFriendList.setLayoutManager(new LinearLayoutManager(context));
 
 
     }

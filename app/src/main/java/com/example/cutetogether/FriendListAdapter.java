@@ -12,6 +12,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
 import java.util.ArrayList;
 
 //https://github.com/mitchtabian/Recyclerview/blob/master/RecyclerView/app/src/main/java/codingwithmitch/com/recyclerview/RecyclerViewAdapter.java
@@ -39,7 +44,16 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull Viewholder viewholder, final int i) {
+
+
         Log.d(TAG, "onBindViewHolder: called");
+        StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
+        StorageReference img = mStorageReference.child("img/image.jpg");
+
+        Glide.with(mContext)
+                .load(img)
+                .apply(new RequestOptions().override(300,300))
+                .into(viewholder.mImage);
 
         viewholder.mFriendName.setText(mFriendNames.get(i));
         // TODO: 3/18/19 add on clicklister functionality

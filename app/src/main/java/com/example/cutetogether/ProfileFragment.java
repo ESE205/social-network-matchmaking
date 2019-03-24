@@ -1,21 +1,19 @@
 package com.example.cutetogether;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.media.Image;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.annotation.GlideModule;
 import com.bumptech.glide.request.RequestOptions;
-import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,13 +25,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-public class ProfileActivity extends AppCompatActivity {
 
-    //https://stackoverflow.com/questions/43826927/firebase-storage-and-android-images
-    //https://firebase.google.com/docs/firestore/query-data/get-data
-    //https://github.com/firebase/FirebaseUI-Android/blob/master/storage/README.md
 
-    private static final String TAG = "ProfileActivity";
+public class ProfileFragment extends Fragment {
+    private static final String TAG = "ProfileFragment";
 
     private TextView mName;
     private TextView mAge;
@@ -48,16 +43,18 @@ public class ProfileActivity extends AppCompatActivity {
     private StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        Log.d(TAG, "onCreateView: started");
 
-        mName = findViewById(R.id.profile_textview_name);
-        mAge = findViewById(R.id.profile_tv_user_age);
-        mCity = findViewById(R.id.profile_tv_user_city);
-        mAbout = findViewById(R.id.profile_tv_user_about);
-        mGender = findViewById(R.id.profile_tv_user_gender);
-        mImageView = findViewById(R.id.profile_im);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        mName = view.findViewById(R.id.profile_textview_name);
+        mAge = view.findViewById(R.id.profile_tv_user_age);
+        mCity = view.findViewById(R.id.profile_tv_user_city);
+        mAbout = view.findViewById(R.id.profile_tv_user_about);
+        mGender = view.findViewById(R.id.profile_tv_user_gender);
+        mImageView = view.findViewById(R.id.profile_im);
 
         final StorageReference img = mStorageReference.child("img/image.jpg");
 
@@ -82,7 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
                     mAbout.setText(document.getString("about"));
 
 
-                    Glide.with(getApplicationContext())
+                    Glide.with(getActivity().getApplicationContext())
                             .load(img)
                             .apply(new RequestOptions().override(300,300))
                             .into(mImageView);
@@ -101,37 +98,6 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-        Button friend = findViewById(R.id.profile_btn_friends);
-        Button chat = findViewById(R.id.profile_btn_chat);
-        Button match = findViewById(R.id.profile_btn_match);
-
-        friend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, friendActivity.class);
-                finish();
-                startActivity(intent);
-            }
-        });
-
-        chat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, chatActivity.class);
-                finish();
-                startActivity(intent);
-            }
-        });
-
-        match.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(ProfileActivity.this, matchActivity.class);
-                finish();
-                startActivity(intent);
-            }
-        });
-
-
+        return view;
     }
 }

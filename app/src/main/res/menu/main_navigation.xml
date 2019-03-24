@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/ic_person_black_24dp"
+        android:title="Profile"
+        />
+    <item
+        android:id="@+id/navigation_friend"
+        android:icon="@drawable/ic_group_black_24dp"
+        android:title="Friends"
+        />
+    <item
+        android:id="@+id/navigation_match"
+        android:icon="@drawable/ic_favorite_black_24dp"
+        android:title="Match"
+        />
+    <item
+        android:id="@+id/navigation_chat"
+        android:icon="@drawable/ic_chat_black_24dp"
+        android:title="Chat"
+        />
+
+</menu>

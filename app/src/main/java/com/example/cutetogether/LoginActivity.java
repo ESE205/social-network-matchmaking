@@ -87,7 +87,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void sendToUserPage(FirebaseUser user){
-        Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         finish();
         startActivity(intent);
     }

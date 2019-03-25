@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
     ChatFragment chatFragment;
     MatchFragment matchFragment;
     FriendFragment friendFragment;
+    Fragment latest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +42,33 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         matchFragment = new MatchFragment();
         friendFragment = new FriendFragment();
 
-        loadFragment(profileFragment);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_activity_frame, profileFragment)
+                .commit();
+
+        latest = profileFragment;
 
     }
 
-    private void loadFragment(Fragment fragment){
+    private void loadFragment(Fragment fragment, Fragment current){
+        latest = fragment;
+        if(fragment != null && fragment.isAdded()){
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .hide(current)
+                    .show(fragment)
+                    .commit();
+        }else{
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .hide(current)
+                    .add(R.id.main_activity_frame, fragment)
+                    .commit();
+        }
+    }
+
+    private void replaceFragment(Fragment fragment){
         if(fragment != null){
             getSupportFragmentManager()
                     .beginTransaction()
@@ -77,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
                 break;
         }
 
-        loadFragment(fragment);
+        loadFragment(fragment, latest);
         return true;
     }
 }

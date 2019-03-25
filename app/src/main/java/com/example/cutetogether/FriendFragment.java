@@ -3,7 +3,10 @@ package com.example.cutetogether;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,11 @@ import android.view.ViewGroup;
 public class FriendFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private ViewPager mViewPager;
+    private TabLayout mTabLayout;
+    private FriendTabAdapter mFriendTabAdapter;
+
+    private static final String TAG = "FriendFragment";
 
     public FriendFragment() {
         // Required empty public constructor
@@ -26,16 +34,30 @@ public class FriendFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
+        Log.d(TAG, "onCreate: Started");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.d(TAG, "onCreateView: Started");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_friend, container, false);
+        View view = inflater.inflate(R.layout.fragment_friend, container, false);
+
+        mTabLayout = view.findViewById(R.id.frag_friend_tablayout);
+        mViewPager = view.findViewById(R.id.frag_friend_vp);
+        mFriendTabAdapter = new FriendTabAdapter(getFragmentManager());
+
+        mFriendTabAdapter.addFragment(new FriendListFragment(), "Friends");
+        mFriendTabAdapter.addFragment(new AddFriendFragment(), "Manage");
+
+        mViewPager.setAdapter(mFriendTabAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
+
+        return view;
+
+
     }
 
     @Override

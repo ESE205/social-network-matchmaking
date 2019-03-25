@@ -1,8 +1,10 @@
 package com.example.cutetogether;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -42,12 +44,17 @@ public class ProfileFragment extends Fragment {
     private FirebaseUser user = mAuth.getCurrentUser();
     private StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.d(TAG, "onCreateView: started");
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        final SharedPreferences.Editor editor = sharedPref.edit();
 
         mName = view.findViewById(R.id.profile_textview_name);
         mAge = view.findViewById(R.id.profile_tv_user_age);
@@ -58,7 +65,7 @@ public class ProfileFragment extends Fragment {
 
         final StorageReference img = mStorageReference.child("img/image.jpg");
 
-        String uid = user.getUid();
+        final String uid = user.getUid();
 
 
         CollectionReference users = db.collection("users");
@@ -68,8 +75,12 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
-
+                    
                     DocumentSnapshot document = task.getResult();
+                    Log.d(TAG, "onComplete: get user task sucessful. trying to add to Shared preferences");
+                    editor.putString("name", document.getString("name"));
+                    editor.putString("id", uid);
+                    editor.commit();
 
                     //if sucessful set the fields
                     mName.setText(document.getString("name"));
@@ -83,10 +94,7 @@ public class ProfileFragment extends Fragment {
                             .load(img)
                             .apply(new RequestOptions().override(300,300))
                             .into(mImageView);
-
-
-
-
+                    
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + document.getData());
                     } else {

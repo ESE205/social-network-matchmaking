@@ -96,10 +96,10 @@ public class friendActivity extends AppCompatActivity {
     private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: started");
 
-        FriendListAdapter adapter = new FriendListAdapter(friends, img_urls, this);
-        AddFriendListAdapter adapter2 = new AddFriendListAdapter(nonfriends, img_urls, nfid, this);
-        mFriendList.setAdapter(adapter);
-        mAddFriendList.setAdapter(adapter2);
+        //FriendListAdapter adapter = new FriendListAdapter(friends, img_urls, this);
+        //AddFriendListAdapter adapter2 = new AddFriendListAdapter(nonfriends, img_urls, nfid, this);
+        //mFriendList.setAdapter(adapter);
+        //mAddFriendList.setAdapter(adapter2);
         mAddFriendList.setLayoutManager(new LinearLayoutManager(this));
         mFriendList.setLayoutManager(new LinearLayoutManager(this));
 

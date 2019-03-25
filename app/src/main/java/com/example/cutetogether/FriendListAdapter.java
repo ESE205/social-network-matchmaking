@@ -25,13 +25,16 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
     private static final String TAG = "FriendListAdapter";
 
     private ArrayList<String> mFriendNames = new ArrayList<>();
-    private ArrayList<String> mImages = new ArrayList<>();
+    private ArrayList<String> mFriendId = new ArrayList<>();
     private Context mContext;
+    private EventListener listener;
 
-    public FriendListAdapter(ArrayList<String> friendNames, ArrayList<String> images, Context context) {
+    public FriendListAdapter(ArrayList<String> friendNames, ArrayList<String> friendId, Context context, EventListener listener) {
         mFriendNames = friendNames;
-        mImages = images;
+        mFriendId = friendId;
         mContext = context;
+        this.listener = listener;
+
     }
 
     @NonNull
@@ -47,22 +50,25 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
 
 
         Log.d(TAG, "onBindViewHolder: called");
+
+        //get profile images
         StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
         StorageReference img = mStorageReference.child("img/image.jpg");
 
+        //load profile images
         Glide.with(mContext)
                 .load(img)
                 .apply(new RequestOptions().override(300,300))
                 .into(viewholder.mImage);
-
+        //set friend name text
         viewholder.mFriendName.setText(mFriendNames.get(i));
-        // TODO: 3/18/19 add on clicklister functionality
+
+        //send friend clicked to fragment
         viewholder.parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: clicked on: " + mFriendNames.get(i));
-
-                Toast.makeText(mContext, "Yea" + mFriendNames.get(i), Toast.LENGTH_SHORT).show();
+                listener.friendClicked(mFriendId.get(i), mFriendNames.get(i));
             }
         });
 
@@ -85,5 +91,10 @@ public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.Vi
             mFriendName = itemView.findViewById(R.id.friend_item_name);
             parentLayout = itemView.findViewById(R.id.friend_item_layout);
         }
+    }
+
+    //interface for communicating with fragment
+    public interface EventListener{
+        public void friendClicked(String id, String name);
     }
 }

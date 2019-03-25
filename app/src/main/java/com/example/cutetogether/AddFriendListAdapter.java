@@ -1,6 +1,8 @@
 package com.example.cutetogether;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -32,15 +36,14 @@ public class AddFriendListAdapter extends RecyclerView.Adapter<AddFriendListAdap
     private static final String TAG = "AddFriendListAdapter";
 
     private ArrayList<String> mFriendNames = new ArrayList<>();
-    private ArrayList<String> mImages = new ArrayList<>();
-    private ArrayList<String> mFriendID;
+    private ArrayList<String> mFriendIDs = new ArrayList<>();
     private Context mContext;
 
-    public AddFriendListAdapter(ArrayList<String> friendNames, ArrayList<String> images, ArrayList<String> FriendID, Context context) {
+
+    public AddFriendListAdapter(ArrayList<String> friendNames, ArrayList<String> friendIDs, Context context) {
         mFriendNames = friendNames;
-        mImages = images;
+        mFriendIDs = friendIDs;
         mContext = context;
-        mFriendID = FriendID;
 
     }
 
@@ -79,27 +82,18 @@ public class AddFriendListAdapter extends RecyclerView.Adapter<AddFriendListAdap
         viewholder.mAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: clicked on add friend button");
-                FirebaseFirestore db = FirebaseFirestore.getInstance();
                 FirebaseAuth mAuth = FirebaseAuth.getInstance();
                 FirebaseUser user = mAuth.getCurrentUser();
-                final Map<String, Object> friendinfo = new HashMap<>();
+                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+                String senderName = sharedPref.getString("name", null);
+                Log.d(TAG, "Shared Preference Name: " + senderName);
+                if(senderName != null){
+                    sendFriendRequest(mFriendNames.get(i),mFriendIDs.get(i),user.getUid(),senderName);
+                }else{
+                    Log.d(TAG, "Friend add failed. Name is not shared in shared preference");
+                    Toast.makeText(mContext, "Add Friend Failed", Toast.LENGTH_SHORT).show();
+                }
 
-                friendinfo.put("name", mFriendNames.get(i));
-                db.collection("users").document(user.getUid()).collection("friends").document(mFriendID.get(i))
-                        .set(friendinfo)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void aVoid) {
-                                Log.d(TAG, "onSuccess: Document sucessfully written");
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "onFailure: Error writing document");
-                            }
-                        });
             }
         });
     }
@@ -109,12 +103,68 @@ public class AddFriendListAdapter extends RecyclerView.Adapter<AddFriendListAdap
         return mFriendNames.size();
     }
 
+    private void sendFriendRequest(String name, String id, String senderId, String senderName){
+        Log.d(TAG, "onClick: clicked on add friend button");
+
+        //firebase var
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        //create friend request send object
+        Map<String, Object> friendinfo = new HashMap<>();
+        Map<String, Object> nestedData = new HashMap<>();
+        nestedData.put("name", name);
+        nestedData.put("status", "pending");
+        nestedData.put("role", "sender");
+        friendinfo.put(id, nestedData);
+
+        //create friend request req object
+        Map<String, Object> reqfriendinfo = new HashMap<>();
+        Map<String, Object> reqnestedData = new HashMap<>();
+        reqnestedData.put("name", senderName);
+        reqnestedData.put("status", "pending");
+        reqnestedData.put("role", "rec");
+        reqfriendinfo.put(senderId, reqnestedData);
+
+        //insert friend request object for sender
+        db.collection("friendrequests").document(senderId)
+                .set(friendinfo, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: Document sucessfully written");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: Error writing document");
+                    }
+                });
+
+        //insert friend request object for reciever
+        db.collection("friendrequests").document(id)
+                .set(reqfriendinfo, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: Document sucessfully written");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: Error writing document");
+                    }
+                });
+
+
+    }
 
     public class Viewholder extends RecyclerView.ViewHolder{
         ImageView mImage;
         TextView mFriendName;
         RelativeLayout parentLayout;
-        Button mAdd;
+        ImageButton mAdd;
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);

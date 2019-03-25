@@ -157,8 +157,12 @@ public class AddFriendFragment extends Fragment {
                             Log.d(TAG, "data: " + value.get("role"));
 
                             if(value.get("role").equals("rec")){
-                                Log.d(TAG, "got friend rec");
-                                friends.add(value.get("name"));
+                                Log.d(TAG, "got friend rec " + value.keySet().toString());
+                                Log.d(TAG, "onComplete: " + value.toString());
+                                Log.d(TAG, "onComplete: " + value.get("  name"));
+                                Log.d(TAG, "onComplete: " + value.get(" name"));
+                                Log.d(TAG, "onComplete: " + value.get("name"));
+                                friends.add(value.get(" name"));
                                 ids.add(key);
                             }
                         }
@@ -215,7 +219,7 @@ public class AddFriendFragment extends Fragment {
     }
 
     private void initAcceptRecyclerView(ArrayList<String> names, ArrayList<String> ids){
-        Log.d(TAG, "initAcceptRecyclerView: started");
+        Log.d(TAG, "initAcceptRecyclerView: started, sending data: " + names.toString());
         Context context = getContext();
         AcceptFriendListAdapter adapter = new AcceptFriendListAdapter(names, ids, context);
         mAcceptFriendList.setAdapter(adapter);

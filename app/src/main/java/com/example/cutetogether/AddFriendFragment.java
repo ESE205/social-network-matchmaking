@@ -63,6 +63,7 @@ public class AddFriendFragment extends Fragment {
         Log.d(TAG, "onCreateView: started");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_add_friend, container, false);
+        view.setNestedScrollingEnabled(true);
 
         mAddFriendList = view.findViewById(R.id.frag_friend_add_rv1);
         mAcceptFriendList = view.findViewById(R.id.frag_friend_accept_rv1);

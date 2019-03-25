@@ -1,6 +1,8 @@
 package com.example.cutetogether;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.internal.BottomNavigationMenu;
 import android.support.design.widget.BottomNavigationView;
@@ -33,6 +35,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         mBottomNavigationView = findViewById(R.id.main_activity_bottom_nav);
         mFrameContainer = findViewById(R.id.main_activity_frame);
+
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt("navHeight", mBottomNavigationView.getHeight());
+        editor.commit();
 
         //mBottomNavigationView.setOnNavigationItemReselectedListener(this);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);

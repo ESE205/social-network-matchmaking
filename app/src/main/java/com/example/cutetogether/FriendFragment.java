@@ -1,8 +1,11 @@
 package com.example.cutetogether;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -47,6 +50,13 @@ public class FriendFragment extends Fragment {
 
         mTabLayout = view.findViewById(R.id.frag_friend_tablayout);
         mViewPager = view.findViewById(R.id.frag_friend_vp);
+
+        ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        int navHeight = sharedPref.getInt("navHeight", 56);
+        params.height=mViewPager.getHeight()-navHeight;
+        mViewPager.setLayoutParams(params);
+
         mFriendTabAdapter = new FriendTabAdapter(getFragmentManager());
 
         mFriendTabAdapter.addFragment(new FriendListFragment(), "Friends");
@@ -54,6 +64,8 @@ public class FriendFragment extends Fragment {
 
         mViewPager.setAdapter(mFriendTabAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
+
+
 
         return view;
 

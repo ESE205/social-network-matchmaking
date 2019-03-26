@@ -18,12 +18,19 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendListAdapter.Viewholder>{
 
@@ -31,15 +38,12 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
 
     private ArrayList<String> mFriendNames = new ArrayList<>();
     private ArrayList<String> mFriendIDs = new ArrayList<>();
-    private ArrayList<String> mFriendID;
     private Context mContext;
 
     public AcceptFriendListAdapter(ArrayList<String> friendNames, ArrayList<String> friendIDs, Context context) {
         mFriendNames = friendNames;
         mFriendIDs = friendIDs;
         mContext = context;
-
-
     }
 
     @NonNull
@@ -56,6 +60,11 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
 
         StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
         StorageReference img = mStorageReference.child("img/image.jpg");
+
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final FirebaseUser user = mAuth.getCurrentUser();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final String userName = sharedPref.getString("name", null);
 
         Glide.with(mContext)
                 .load(img)
@@ -77,20 +86,112 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
         viewholder.mAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                FirebaseUser user = mAuth.getCurrentUser();
-                SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
-                String senderName = sharedPref.getString("name", null);
-                if(senderName != null){
-                    //sendFriendRequest(mFriendNames.get(i),mFriendIDs.get(i),user.getUid(),senderName);
+                if(userName != null){
+                    acceptFriendRequest(mFriendNames.get(i),mFriendIDs.get(i),user.getUid(),userName);
                 }else{
                     Log.d(TAG, "Friend add failed. Name is not shared in shared preference");
                     Toast.makeText(mContext, "Add Friend Failed", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
+        viewholder.mDeny.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(userName != null){
+                    denyFriendRequest(mFriendNames.get(i),mFriendIDs.get(i),user.getUid(),userName);
+                }else{
+                    Log.d(TAG, "Friend deny failed. Name is not shared in shared preference");
+                    Toast.makeText(mContext, "deny Friend Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+    private void acceptFriendRequest(String name, String id, String acceptID, String acceptName){
+
+        //firebase var
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        //create two friend objects
+        Map<String, Object> friendinfo = new HashMap<>();
+        friendinfo.put(acceptID,acceptName);
+
+        Map<String, Object> friendinfo2 = new HashMap<>();
+        friendinfo2.put(id,name);
+
+        db.collection("friends").document(id)
+                .set(friendinfo, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: ");
+                        Toast.makeText(mContext, "Friend Added", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: ");
+                        Toast.makeText(mContext, "Friend Not Added", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        db.collection("friends").document(acceptID)
+                .set(friendinfo2, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: ");
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, "onFailure: ");
+                    }
+                });
+
+        db.collection("friendrequests").document(id)
+                .update(acceptID, FieldValue.delete())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: removed from friend request list");
+                    }
+                });
+        db.collection("friendrequests").document(acceptID)
+                .update(id, FieldValue.delete())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: removed from friend request list");
+                    }
+                });
+    }
+
+    private void denyFriendRequest(String name, String id, String denyId, String denyName){
+
+        //firebase var
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        db.collection("friendrequests").document(id)
+                .update(denyId, FieldValue.delete())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: removed from friend request list");
+                    }
+                });
+        db.collection("friendrequests").document(denyId)
+                .update(id, FieldValue.delete())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: removed from friend request list");
+                    }
+                });
     }
 
     @Override

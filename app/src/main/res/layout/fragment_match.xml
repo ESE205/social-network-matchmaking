@@ -6,67 +6,25 @@
     android:layout_height="match_parent"
     >
 
-    <ImageView
-        android:id="@+id/match1"
-        android:layout_width="233dp"
-        android:layout_height="214dp"
-        android:layout_marginTop="88dp"
-
+    <android.support.design.widget.TabLayout
+        android:id="@+id/frag_match_tablayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:layout_editor_absoluteY="1dp">
 
-    <TextView
-        android:id="@+id/frag_match_tv1"
-        android:layout_width="wrap_content"
+    </android.support.design.widget.TabLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/frag_match_vp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/match1" />
-
-    <ImageView
-        android:id="@+id/match2"
-        android:layout_width="233dp"
-        android:layout_height="214dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frag_match_tv1"
-        tools:srcCompat="@tools:sample/avatars" />
-
-    <TextView
-        android:id="@+id/frag_match_tv2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/match2" />
-
-    <Button
-        android:id="@+id/btn_match_confirm"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/match_confirm_btn"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btn_match_deny"
-
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/frag_match_tv2"
-        app:layout_constraintVertical_bias="0.42" />
-
-    <Button
-        android:id="@+id/btn_match_deny"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/btn_match_deny"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_match_confirm"
-        app:layout_constraintTop_toBottomOf="@+id/frag_match_tv2"
-        app:layout_constraintVertical_bias="0.42" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frag_match_tablayout"
+        app:layout_constraintVertical_bias="0.0" />
 </android.support.constraint.ConstraintLayout>

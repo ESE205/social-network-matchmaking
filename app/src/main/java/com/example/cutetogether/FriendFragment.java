@@ -48,24 +48,26 @@ public class FriendFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_friend, container, false);
 
+        //initialzie variables
         mTabLayout = view.findViewById(R.id.frag_friend_tablayout);
         mViewPager = view.findViewById(R.id.frag_friend_vp);
 
+        //adjust height of viewpager based on the navigation bar size
+        //assume navbar will be about 56dp if info not set in shared preferences
         ViewGroup.LayoutParams params = mViewPager.getLayoutParams();
         final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         int navHeight = sharedPref.getInt("navHeight", 56);
         params.height=mViewPager.getHeight()-navHeight;
         mViewPager.setLayoutParams(params);
 
+        //add fragments to tab adapter
         mFriendTabAdapter = new FriendTabAdapter(getFragmentManager());
-
         mFriendTabAdapter.addFragment(new FriendListFragment(), "Friends");
         mFriendTabAdapter.addFragment(new AddFriendFragment(), "Manage");
 
+        //set up view pager with adapter
         mViewPager.setAdapter(mFriendTabAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-
-
 
         return view;
 

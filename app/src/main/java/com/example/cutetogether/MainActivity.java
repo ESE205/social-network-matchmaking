@@ -17,7 +17,8 @@ import android.widget.FrameLayout;
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         ChatFragment.OnFragmentInteractionListener, MatchFragment.OnFragmentInteractionListener,
-        FriendFragment.OnFragmentInteractionListener, AddFriendFragment.OnFragmentInteractionListener {
+        FriendFragment.OnFragmentInteractionListener, AddFriendFragment.OnFragmentInteractionListener,
+        PairingFragment.OnFragmentInteractionListener, MatchViewFragment.OnFragmentInteractionListener {
 
     private BottomNavigationView mBottomNavigationView;
     private FrameLayout mFrameContainer;

@@ -1,25 +1,47 @@
 package com.example.cutetogether;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link MatchViewFragment.OnFragmentInteractionListener} interface
+ * {@link MatchListFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class MatchViewFragment extends Fragment {
+public class MatchListFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+    private static final String TAG = "MatchListFragment";
 
-    public MatchViewFragment() {
+    //variables
+    private RecyclerView mRecyclerView;
+    private MatchListAdapter mMatchListAdapter;
+    private ArrayList<String> matchNames = new ArrayList<>();
+    private ArrayList<String> matchIds = new ArrayList<>();
+
+    //firebase variables
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
+    private StorageReference mStorageReference = FirebaseStorage.getInstance().getReference();
+
+    public MatchListFragment() {
         // Required empty public constructor
     }
 
@@ -27,14 +49,27 @@ public class MatchViewFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        Log.d(TAG, "onCreateView: started");
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_match_view, container, false);
+        View view = inflater.inflate(R.layout.fragment_match_view, container, false);
+
+        //initialize
+        mRecyclerView = view.findViewById(R.id.frag_match_list_recycle);
+        mMatchListAdapter = new MatchListAdapter();
+
+        return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
+    private void getMatchList(){
 
     }
+
+    private void initRecyclerView(){
+
+    }
+
 
     @Override
     public void onAttach(Context context) {

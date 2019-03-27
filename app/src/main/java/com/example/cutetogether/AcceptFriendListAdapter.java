@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -208,10 +207,10 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
 
         public Viewholder(@NonNull View itemView) {
             super(itemView);
-            mImage = itemView.findViewById(R.id.friend_accept_item_image);
-            mFriendName = itemView.findViewById(R.id.friend_accept_item_name);
+            mImage = itemView.findViewById(R.id.match_accept_item_image);
+            mFriendName = itemView.findViewById(R.id.match_accept_item_name);
             parentLayout = itemView.findViewById(R.id.friend_accept_item_layout);
-            mAdd = itemView.findViewById(R.id.friend_accept_item_btn);
+            mAdd = itemView.findViewById(R.id.match_accept_item_btn);
             mDeny = itemView.findViewById(R.id.friend_reject_item_btn);
 
         }

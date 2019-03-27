@@ -1,10 +1,8 @@
 package com.example.cutetogether;
 
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.design.internal.BottomNavigationMenu;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -18,7 +16,7 @@ import android.widget.FrameLayout;
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         ChatFragment.OnFragmentInteractionListener, MatchFragment.OnFragmentInteractionListener,
         FriendFragment.OnFragmentInteractionListener, AddFriendFragment.OnFragmentInteractionListener,
-        PairingFragment.OnFragmentInteractionListener, MatchViewFragment.OnFragmentInteractionListener {
+        PairingFragment.OnFragmentInteractionListener, MatchListFragment.OnFragmentInteractionListener {
 
     private BottomNavigationView mBottomNavigationView;
     private FrameLayout mFrameContainer;

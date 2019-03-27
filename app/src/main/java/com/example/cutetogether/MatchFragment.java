@@ -2,7 +2,6 @@ package com.example.cutetogether;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
@@ -59,7 +58,7 @@ public class MatchFragment extends Fragment {
         //add fragments to tab adapter
         mMatchTabAdapter = new MatchTabAdapter(getFragmentManager());
         mMatchTabAdapter.addFragment(new PairingFragment(), "Pair");
-        mMatchTabAdapter.addFragment(new MatchViewFragment(), "View");
+        mMatchTabAdapter.addFragment(new MatchListFragment(), "View");
 
         //set up view pager with adapter
         mViewPager.setAdapter(mMatchTabAdapter);

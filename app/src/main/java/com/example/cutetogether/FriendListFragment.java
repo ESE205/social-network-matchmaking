@@ -36,7 +36,7 @@ public class FriendListFragment extends Fragment implements FriendListAdapter.Ev
     private OnFragmentInteractionListener mListener;
     private static final String TAG = "FriendListFragment";
 
-    //FriendListadapter variables
+    //variables
     private RecyclerView mRecyclerView;
     private FriendListAdapter mFriendListAdapter;
     private ArrayList<String> friendNames = new ArrayList<>();

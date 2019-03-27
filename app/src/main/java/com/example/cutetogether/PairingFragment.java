@@ -106,6 +106,30 @@ public class PairingFragment extends Fragment {
         //get match list, load the page, and set the listeners
         getMatchList(username, userid);
 
+        //add button listeners
+        mConfirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmMatch(match1, match2, matchId1, matchId2);
+                if(matchNames1.isEmpty()){
+                    getMatchList(username,userid);
+                }else{
+                    reloadPage(matchNames1.remove(0), matchNames2.remove(0),mathchIds1.remove(0),matchIds2.remove(0));
+                }
+            }
+        });
+
+        mDeny.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(matchNames1.isEmpty()){
+                    getMatchList(username,userid);
+                }else{
+                    reloadPage(matchNames1.remove(0), matchNames2.remove(0),mathchIds1.remove(0),matchIds2.remove(0));
+                }
+            }
+        });
+
         return view;
     }
 

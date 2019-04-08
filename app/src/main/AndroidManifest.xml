@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.cutetogether">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,14 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".FireStoreTestActivity"></activity>
-        <activity android:name=".friendActivity" />
-        <activity android:name=".chatActivity" />
+        <activity android:name=".miscTools.FireStoreTestActivity"></activity>
         <activity android:name=".MainActivity" />
-        <activity android:name=".matchActivity" />
-        <activity android:name=".ProfileActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name=".onBoardFiles.RegisterActivity" />
+        <activity android:name=".onBoardFiles.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

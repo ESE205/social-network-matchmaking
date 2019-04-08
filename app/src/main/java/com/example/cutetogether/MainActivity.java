@@ -10,21 +10,37 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
+import com.example.cutetogether.chatFiles.ChatFragment;
+import com.example.cutetogether.chatFiles.ChatListFragment;
+import com.example.cutetogether.friendFiles.AddFriendFragment;
+import com.example.cutetogether.friendFiles.FriendFragment;
+import com.example.cutetogether.matchFiles.MatchFragment;
+import com.example.cutetogether.matchFiles.MatchListFragment;
+import com.example.cutetogether.matchFiles.PairingFragment;
+import com.example.cutetogether.profileFiles.ProfileFragment;
+
 
 //https://www.simplifiedcoding.net/bottom-navigation-android-example/
 
 public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener,
         ChatFragment.OnFragmentInteractionListener, MatchFragment.OnFragmentInteractionListener,
         FriendFragment.OnFragmentInteractionListener, AddFriendFragment.OnFragmentInteractionListener,
-        PairingFragment.OnFragmentInteractionListener, MatchListFragment.OnFragmentInteractionListener {
+        PairingFragment.OnFragmentInteractionListener, MatchListFragment.OnFragmentInteractionListener,
+        ChatListFragment.OnFragmentInteractionListener {
 
     private BottomNavigationView mBottomNavigationView;
     private FrameLayout mFrameContainer;
 
+    //callbacks
+    ChatListFragment.OnFragmentInteractionListener mOnChatListFragmentInteractionListener;
+
+    //fragments
     ProfileFragment profileFragment;
     ChatFragment chatFragment;
     MatchFragment matchFragment;
     FriendFragment friendFragment;
+    ChatListFragment ChatListFragment;
+    ChatFragment ChatFragment;
     Fragment latest;
 
     @Override
@@ -47,6 +63,11 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         chatFragment = new ChatFragment();
         matchFragment = new MatchFragment();
         friendFragment = new FriendFragment();
+        ChatListFragment = new ChatListFragment();
+        ChatFragment = new ChatFragment();
+
+        //add listeners to fragments
+        ChatListFragment.setListener(this);
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -90,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         switch (menuItem.getItemId()){
             case R.id.navigation_chat:
-                fragment = chatFragment;
+                fragment = ChatListFragment;
                 break;
 
             case R.id.navigation_friend:
@@ -108,5 +129,12 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
 
         loadFragment(fragment, latest);
         return true;
+    }
+
+    @Override
+    public void chatClicked(String chatid) {
+        ChatFragment fragment = new ChatFragment();
+        fragment.setChatid(chatid);
+        loadFragment(fragment,latest);
     }
 }

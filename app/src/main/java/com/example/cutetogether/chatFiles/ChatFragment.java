@@ -2,10 +2,16 @@ package com.example.cutetogether.chatFiles;
 
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +20,21 @@ import android.widget.EditText;
 import android.widget.Toolbar;
 
 import com.example.cutetogether.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.ListIterator;
+import java.util.Map;
 
 
 /**
@@ -24,21 +43,28 @@ import java.util.ArrayList;
  * {@link ChatFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ChatFragment extends Fragment {
+public class ChatFragment extends Fragment implements ChatAdapter.EventListener{
 
-
+    private static final String TAG = "ChatFragment";
     private OnFragmentInteractionListener mListener;
+    private boolean recyclerViewNotInitialized = true;
 
     //message variables
     private String chatid;
     private String senderName;
     private String recieverName;
-    private ArrayList<MessageItem> mMessageItems;
+    private ArrayList<MessageItem> mMessageItems = new ArrayList<>();
+    private ChatAdapter mChatAdapter;
 
     //xml variables
     private EditText mEditText;
     private Button mButton;
     private RecyclerView mRecyclerView;
+
+    //firebase variables
+    private FirebaseDatabase mFirebaseDatabase = FirebaseDatabase.getInstance();
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseUser user = mAuth.getCurrentUser();
 
     public ChatFragment() {
         // Required empty public constructor
@@ -52,6 +78,7 @@ public class ChatFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -78,10 +105,82 @@ public class ChatFragment extends Fragment {
     }
 
     private void sendMessage(String message) {
+        Log.d(TAG, "sendMessage: ");
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
 
+        MessageItem messageItem = new MessageItem(message, sharedPref.getString("name", ""),"dsf", sharedPref.getString("id", user.getUid()));
+        Map<String, Object> data = new HashMap<>();
+        int messageNumber = mMessageItems.size()+1;
+        data.put(""+messageNumber, messageItem);
+        mFirebaseDatabase.getReference("chat/" + chatid).updateChildren(data).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                if(task.isSuccessful()){
+                    Log.d(TAG, "onComplete: Success");
+                }else{
+                    Log.d(TAG, "onComplete: Failure " + task.getException());
+                }
+            }
+        });
     }
 
     private void getMessages() {
+        DatabaseReference ref = mFirebaseDatabase.getReference("chat/" + chatid);
+        ref.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "onChildAdded: " + dataSnapshot.toString());
+
+//                for (DataSnapshot message : dataSnapshot.getChildren()){
+//                    MessageItem messageItem = message.getValue(MessageItem.class);
+//                    mMessageItems.add(messageItem);
+//                }
+
+                Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
+                Log.d(TAG, "onChildAdded: " + dataSnapshot.getValue());
+                MessageItem messageItem = new MessageItem();
+                messageItem = dataSnapshot.getValue(MessageItem.class);
+                Log.d(TAG, "onChildAdded: " + messageItem.getName());
+                mMessageItems.add(messageItem);
+
+
+                initRecyclerView();
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void initRecyclerView(){
+        if(recyclerViewNotInitialized){
+            Log.d(TAG, "initRecyclerView: started " + mMessageItems.size());
+            Context context = getContext();
+            mChatAdapter = new ChatAdapter(mMessageItems, context);
+            mRecyclerView.setAdapter(mChatAdapter);
+            mRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerViewNotInitialized = false;
+        }else{
+            mChatAdapter.notifyDataSetChanged();
+        }
 
     }
 

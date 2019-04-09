@@ -40,6 +40,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Viewho
     @NonNull
     @Override
     public ChatListAdapter.Viewholder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        Log.d(TAG, "onCreateViewHolder: ");
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.layout_chat_list_item, viewGroup, false);
         ChatListAdapter.Viewholder holder = new ChatListAdapter.Viewholder(view);
         return holder;
@@ -47,6 +48,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Viewho
 
     @Override
     public void onBindViewHolder(@NonNull ChatListAdapter.Viewholder viewholder, final int i) {
+        Log.d(TAG, "onBindViewHolder: ");
         viewholder.mTextView.setText(mChatItems.get(i).getName());
 
         //get profile images

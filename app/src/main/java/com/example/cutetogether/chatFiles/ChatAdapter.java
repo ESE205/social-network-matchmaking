@@ -3,6 +3,7 @@ package com.example.cutetogether.chatFiles;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.cutetogether.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -23,7 +25,7 @@ import java.util.ArrayList;
 
 //source https://blog.sendbird.com/android-chat-tutorial-building-a-messaging-ui
 public class ChatAdapter extends RecyclerView.Adapter {
-
+    private static final String TAG = "ChatAdapter";
     private static final int VIEW_TYPE_MESSAGE_SENT = 1;
     private static final int VIEW_TYPE_MESSAGE_RECEIVED = 2;
 
@@ -32,7 +34,9 @@ public class ChatAdapter extends RecyclerView.Adapter {
     private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private FirebaseUser user = mAuth.getCurrentUser();
 
-    public ChatAdapter(Context context, ArrayList<MessageItem> messageItems) {
+
+    public ChatAdapter(ArrayList<MessageItem> messageItems, Context context) {
+        Log.d(TAG, "ChatAdapter: ");
         mContext = context;
         mMessageItems = messageItems;
     }
@@ -40,6 +44,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+        Log.d(TAG, "onCreateViewHolder: ");
         View view;
         if (i == VIEW_TYPE_MESSAGE_SENT) {
             view = LayoutInflater.from(viewGroup.getContext())
@@ -56,6 +61,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
+        Log.d(TAG, "onBindViewHolder: ");
         MessageItem messageItem = mMessageItems.get(i);
 
         switch (viewHolder.getItemViewType()){
@@ -69,6 +75,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int i) {
+        Log.d(TAG, "getItemViewType: ");
         MessageItem message = mMessageItems.get(i);
 
         if (message.getId().equals(user.getUid())) {
@@ -82,7 +89,12 @@ public class ChatAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
+        Log.d(TAG, "getItemCount: ");
         return mMessageItems.size();
+    }
+
+    public interface EventListener{
+
     }
 
     private class SentMessageViewholder extends RecyclerView.ViewHolder{
@@ -98,6 +110,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
         }
 
         void bind(MessageItem messageItem){
+            Log.d(TAG, "bind: ");
             messageBody.setText(messageItem.getMessage());
             messageTime.setText(messageItem.getTime());
         }
@@ -119,6 +132,7 @@ public class ChatAdapter extends RecyclerView.Adapter {
         }
 
         void bind(MessageItem messageItem){
+            Log.d(TAG, "bind: ");
             messageBody.setText(messageItem.getMessage());
             messageName.setText(messageItem.getName());
             messageTime.setText(messageItem.getTime());

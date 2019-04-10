@@ -12,6 +12,9 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.cutetogether.Network.GetDataService;
+import com.example.cutetogether.Network.RetrofitClientInstance;
+import com.example.cutetogether.Network.User;
 import com.example.cutetogether.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -27,6 +30,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -95,7 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
         String age = mAge.getText().toString();
         String city = mCity.getText().toString();
         String gender = mGender.getSelectedItem().toString();
-        String name = mUsername.getText().toString();
+        final String name = mUsername.getText().toString();
 
         final Map<String, Object> userinfo = new HashMap<>();
 
@@ -129,6 +136,9 @@ public class RegisterActivity extends AppCompatActivity {
                                             }
                                         });
 
+                                User networkUser = new User(name, user.getUid());
+                                addToNeo(networkUser);
+
 
 
 
@@ -148,5 +158,23 @@ public class RegisterActivity extends AppCompatActivity {
                         // ...
                     }
                 });
+    }
+
+    public void addToNeo(User user){
+        Log.d(TAG, "addToNeo: ");
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+        Call<User> call = service.createUser(user);
+
+        call.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d(TAG, "onResponse: neo response successful" + response.toString());
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                Log.d(TAG, "Adding to Neo4j failed: " + t.toString());
+            }
+        });
     }
 }

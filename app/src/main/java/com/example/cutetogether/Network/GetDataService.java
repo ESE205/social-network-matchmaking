@@ -19,10 +19,10 @@ public interface GetDataService {
     Call<ArrayList<FriendRequest>> getFriendSent(@Body User user);
 
     @POST("friends/add")
-    Call<FriendRequest> addFriend(@Body User user);
+    Call<FriendRequest> addFriend(@Body User user, User user2);
 
     @POST("friends/accept")
-    Call<User> acceptFriend(@Body User user);
+    Call<User> acceptFriend(@Body User user, User user2);
 
     @POST("match/getlist")
     Call<ArrayList<MatchObject>> getMatchList(@Body User user);

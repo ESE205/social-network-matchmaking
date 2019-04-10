@@ -162,7 +162,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     public void addToNeo(User user){
         Log.d(TAG, "addToNeo: ");
-        GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance(this).create(GetDataService.class);
         Call<User> call = service.createUser(user);
 
         call.enqueue(new Callback<User>() {

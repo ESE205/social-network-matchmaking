@@ -12,17 +12,23 @@ public interface GetDataService {
     @POST("users/create")
     Call<User> createUser(@Body User user);
 
+    @POST("friends/getfriends")
+    Call<ArrayList<User>> getFriends(@Body User user);
+
     @POST("friends/getrequests")
-    Call<ArrayList<FriendRequest>> getFriendRequest(@Body User user);
+    Call<ArrayList<User>> getFriendRequest(@Body User user);
 
     @POST("friends/getsent")
-    Call<ArrayList<FriendRequest>> getFriendSent(@Body User user);
+    Call<ArrayList<User>> getFriendSent(@Body User user);
 
     @POST("friends/add")
-    Call<FriendRequest> addFriend(@Body User user, User user2);
+    Call<String> addFriend(@Body ArrayList<User> user);
 
     @POST("friends/accept")
-    Call<User> acceptFriend(@Body User user, User user2);
+    Call<String> acceptFriend(@Body ArrayList<User> user);
+
+    @POST("friends/deny")
+    Call<String> denyFriend(@Body ArrayList<User> user);
 
     @POST("match/getlist")
     Call<ArrayList<MatchObject>> getMatchList(@Body User user);

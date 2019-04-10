@@ -1,7 +1,9 @@
 package com.example.cutetogether.friendFiles;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.cutetogether.Network.GetDataService;
+import com.example.cutetogether.Network.RetrofitClientInstance;
+import com.example.cutetogether.Network.User;
 import com.example.cutetogether.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,6 +31,10 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -136,44 +145,69 @@ public class AddFriendFragment extends Fragment {
 
     private void getAcceptFriendList(){
 
-        db.collection("friendrequests").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                ArrayList<String> friends = new ArrayList<String>();
-                ArrayList<String> ids = new ArrayList<String>();
-                if(task.isSuccessful()){
-                    Log.d(TAG, "onComplete: getaccept friend task successful");
-                    DocumentSnapshot document = task.getResult();
-                    if(document.exists()){
-                        Log.d(TAG, "Friend Requests Document Found");
-                        //get data and key values
-                        Map<String, Object> data = document.getData();
-                        Set<String> keys = data.keySet();
-                        //parse data
-                        Log.d(TAG, "friendrequests data: " + data.toString());
-                        for(String key : keys){
-                            String a = data.get(key).toString();
-                            Map<String, String> value = Splitter.on(",").withKeyValueSeparator("=").split(a.substring(1, a.length()-1));
-                            Log.d(TAG, "data: " + value.get("role"));
+//        db.collection("friendrequests").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+//                ArrayList<String> friends = new ArrayList<String>();
+//                ArrayList<String> ids = new ArrayList<String>();
+//                if(task.isSuccessful()){
+//                    Log.d(TAG, "onComplete: getaccept friend task successful");
+//                    DocumentSnapshot document = task.getResult();
+//                    if(document.exists()){
+//                        Log.d(TAG, "Friend Requests Document Found");
+//                        //get data and key values
+//                        Map<String, Object> data = document.getData();
+//                        Set<String> keys = data.keySet();
+//                        //parse data
+//                        Log.d(TAG, "friendrequests data: " + data.toString());
+//                        for(String key : keys){
+//                            String a = data.get(key).toString();
+//                            Map<String, String> value = Splitter.on(",").withKeyValueSeparator("=").split(a.substring(1, a.length()-1));
+//                            Log.d(TAG, "data: " + value.get("role"));
+//
+//                            if(value.get("role").equals("rec")){
+//                                Log.d(TAG, "got friend rec " + value.keySet().toString());
+//                                Log.d(TAG, "onComplete: " + value.toString());
+//                                Log.d(TAG, "onComplete: " + value.get("  name"));
+//                                Log.d(TAG, "onComplete: " + value.get(" name"));
+//                                Log.d(TAG, "onComplete: " + value.get("name"));
+//                                friends.add(value.get(" name"));
+//                                ids.add(key);
+//                            }
+//                        }
+//                        //start recycler view
+//                        initAcceptRecyclerView(friends, ids);
+//                    }else{
+//                        Log.d(TAG, "onComplete: ");
+//                    }
+//                }else{
+//                    Log.d(TAG, "Could not get user friendrequest document. " + task.getException());
+//                }
+//            }
+//        });
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
-                            if(value.get("role").equals("rec")){
-                                Log.d(TAG, "got friend rec " + value.keySet().toString());
-                                Log.d(TAG, "onComplete: " + value.toString());
-                                Log.d(TAG, "onComplete: " + value.get("  name"));
-                                Log.d(TAG, "onComplete: " + value.get(" name"));
-                                Log.d(TAG, "onComplete: " + value.get("name"));
-                                friends.add(value.get(" name"));
-                                ids.add(key);
-                            }
-                        }
-                        //start recycler view
-                        initAcceptRecyclerView(friends, ids);
-                    }else{
-                        Log.d(TAG, "onComplete: ");
-                    }
-                }else{
-                    Log.d(TAG, "Could not get user friendrequest document. " + task.getException());
+        User user1 = new User(sharedPreferences.getString("name", ""), user.getUid());
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance(getContext()).create(GetDataService.class);
+        Call<ArrayList<User>> call = service.getFriendRequest(user1);
+
+        call.enqueue(new Callback<ArrayList<User>>() {
+            @Override
+            public void onResponse(Call<ArrayList<User>> call, Response<ArrayList<User>> response) {
+                Log.d(TAG, "onResponse: neo response successful" + response.toString());
+                Log.d(TAG, "onResponse: neo response " + response.body());
+                ArrayList<String> names = new ArrayList<String>();
+                ArrayList<String> ids = new ArrayList<String>();
+                for(User i : response.body()){
+                    names.add(i.getName());
+                    ids.add(i.getId());
                 }
+                initAcceptRecyclerView(names, ids);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<User>> call, Throwable t) {
+                Log.d(TAG, "Adding to Neo4j failed: " + t.toString());
             }
         });
     }

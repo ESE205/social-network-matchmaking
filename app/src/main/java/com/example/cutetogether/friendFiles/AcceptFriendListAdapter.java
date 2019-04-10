@@ -17,6 +17,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.cutetogether.Network.GetDataService;
+import com.example.cutetogether.Network.RetrofitClientInstance;
+import com.example.cutetogether.Network.User;
 import com.example.cutetogether.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,6 +34,10 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendListAdapter.Viewholder>{
 
@@ -154,45 +161,85 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
                     }
                 });
 
-        db.collection("friendrequests").document(id)
-                .update(acceptID, FieldValue.delete())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: removed from friend request list");
-                    }
-                });
-        db.collection("friendrequests").document(acceptID)
-                .update(id, FieldValue.delete())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: removed from friend request list");
-                    }
-                });
+//        db.collection("friendrequests").document(id)
+//                .update(acceptID, FieldValue.delete())
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "onSuccess: removed from friend request list");
+//                    }
+//                });
+//        db.collection("friendrequests").document(acceptID)
+//                .update(id, FieldValue.delete())
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "onSuccess: removed from friend request list");
+//                    }
+//                });
+        User user = new User(acceptName, acceptID);
+        User user2 = new User(name, id);
+        ArrayList<User> data = new ArrayList<>();
+        data.add(user);
+        data.add(user2);
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance(mContext).create(GetDataService.class);
+        Call<String> call = service.acceptFriend(data);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: neo response successful" + response.toString());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(TAG, "Adding to Neo4j failed: " + t.toString());
+            }
+        });
+
     }
 
     private void denyFriendRequest(String name, String id, String denyId, String denyName){
 
-        //firebase var
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        //firebase var
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+//        db.collection("friendrequests").document(id)
+//                .update(denyId, FieldValue.delete())
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "onSuccess: removed from friend request list");
+//                    }
+//                });
+//        db.collection("friendrequests").document(denyId)
+//                .update(id, FieldValue.delete())
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "onSuccess: removed from friend request list");
+//                    }
+//                });
 
-        db.collection("friendrequests").document(id)
-                .update(denyId, FieldValue.delete())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: removed from friend request list");
-                    }
-                });
-        db.collection("friendrequests").document(denyId)
-                .update(id, FieldValue.delete())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: removed from friend request list");
-                    }
-                });
+        User user = new User(denyName, denyId);
+        User user2 = new User(name, id);
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance(mContext).create(GetDataService.class);
+        ArrayList<User> data = new ArrayList<>();
+        data.add(user);
+        data.add(user2);
+        Call<String> call = service.denyFriend(data);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: neo response successful" + response.toString());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(TAG, "Adding to Neo4j failed: " + t.toString());
+            }
+        });
     }
 
     @Override

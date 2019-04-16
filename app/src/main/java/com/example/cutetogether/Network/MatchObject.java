@@ -5,6 +5,14 @@ public class MatchObject {
     private int endorsers;
 
     public MatchObject(){}
+
+    public MatchObject(String name1, String userid1, String name2, String userid2) {
+        this.name1 = name1;
+        this.userid1 = userid1;
+        this.name2 = name2;
+        this.userid2 = userid2;
+    }
+
     public MatchObject(String name1, String userid1, String status1, String name2, String userid2, String status2) {
         this.name1 = name1;
         this.userid1 = userid1;

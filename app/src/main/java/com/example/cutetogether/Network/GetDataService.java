@@ -2,6 +2,7 @@ package com.example.cutetogether.Network;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -33,17 +34,23 @@ public interface GetDataService {
     @POST("match/getlist")
     Call<ArrayList<MatchObject>> getMatchList(@Body User user);
 
+    @POST("match/getqueue")
+    Call<ArrayList<MatchObject>> getQueue(@Body User user);
+
     @POST("match/endorseMatchInfo")
-    Call<MatchObject> sendMatchInfo(@Body MatchObject matchObject, User user);
+    Call<String> sendMatchInfo(@Body endorseMatchObject data);
 
     @POST("match/denyMatchInfo")
-    Call<MatchObject> denyMatchInfo(@Body MatchObject matchObject, User user);
+    Call<String> denyMatchInfo(@Body endorseMatchObject data);
 
     @POST("match/acceptMatch")
-    Call<MatchObject> acceptMatch(@Body MatchObject matchObject, User user);
+    Call<String> acceptMatch(@Body endorseMatchObject data);
+
+    @POST("match/completeAcceptMatch")
+    Call<String> completeAcceptMatch(@Body endorseMatchObject data);
 
     @POST("match/denyMatch")
-    Call<MatchObject> denyMatch(@Body MatchObject matchObject, User user);
+    Call<String> denyMatch(@Body endorseMatchObject data);
 
 
 }

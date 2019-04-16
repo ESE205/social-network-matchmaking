@@ -81,6 +81,7 @@ public class ProfileFragment extends Fragment {
                     Log.d(TAG, "onComplete: get user task sucessful. trying to add to Shared preferences");
                     editor.putString("name", document.getString("name"));
                     editor.putString("id", uid);
+                    editor.putString("gender", document.getString("gender"));
                     editor.commit();
 
                     //if sucessful set the fields

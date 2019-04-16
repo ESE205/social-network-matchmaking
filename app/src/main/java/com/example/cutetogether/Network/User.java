@@ -3,6 +3,7 @@ package com.example.cutetogether.Network;
 public class User {
     private String name;
     private String id;
+    private String gender;
 
     public User(){}
     public User(String name, String id) {
@@ -24,5 +25,13 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
     }
 }

@@ -17,6 +17,11 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.cutetogether.Network.GetDataService;
+import com.example.cutetogether.Network.MatchObject;
+import com.example.cutetogether.Network.RetrofitClientInstance;
+import com.example.cutetogether.Network.User;
+import com.example.cutetogether.Network.endorseMatchObject;
 import com.example.cutetogether.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,6 +37,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 /**
@@ -119,6 +128,7 @@ public class PairingFragment extends Fragment {
         mDeny.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                denyMatch(match1, match2, matchId1, matchId2);
                 if(matchNames1.isEmpty()){
                     getMatchList(username,userid);
                 }else{
@@ -136,37 +146,62 @@ public class PairingFragment extends Fragment {
     //temporarily use firebase
     private void getMatchList(String name, String id){
         Log.d(TAG, "getMatchList: stared");
-        db.collection("friends").document(id).get()
-                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                    @Override
-                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                        if(documentSnapshot.exists()){
-                            Map friendList = documentSnapshot.getData();
-                            Set<String> keys = friendList.keySet();
-                            for(String key : keys){
+//        db.collection("friends").document(id).get()
+//                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+//                    @Override
+//                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+//                        if(documentSnapshot.exists()){
+//                            Map friendList = documentSnapshot.getData();
+//                            Set<String> keys = friendList.keySet();
+//                            for(String key : keys){
+//
+//                                matchNames1.add((String) friendList.get(key));
+//                                matchNames2.add((String) friendList.get(key));
+//                                mathchIds1.add(key);
+//                                matchIds2.add(key);
+//                            }
+//
+//                            reloadPage(matchNames1.remove(0), matchNames2.remove(0),mathchIds1.remove(0),matchIds2.remove(0));
+//
+//
+//                        }else{
+//                            Log.d(TAG, "Couldn't get list of matches. You aint got no friends");
+//                            Toast.makeText(mContext, "Couldn't get list of matches. You aint got no friends", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "Couldn't get list of matches");
+//                        Toast.makeText(mContext, "Couldn't get list of matches", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
 
-                                matchNames1.add((String) friendList.get(key));
-                                matchNames2.add((String) friendList.get(key));
-                                mathchIds1.add(key);
-                                matchIds2.add(key);
-                            }
+        User user = new User(name, id);
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance(mContext).create(GetDataService.class);
+        Call<ArrayList<MatchObject>> call = service.getQueue(user);
 
-                            reloadPage(matchNames1.remove(0), matchNames2.remove(0),mathchIds1.remove(0),matchIds2.remove(0));
+        call.enqueue(new Callback<ArrayList<MatchObject>>() {
+            @Override
+            public void onResponse(Call<ArrayList<MatchObject>> call, Response<ArrayList<MatchObject>> response) {
+                Log.d(TAG, "onResponse: neo response successful" + response.toString());
+                for(MatchObject i : response.body()){
+                    matchNames1.add(i.getName1());
+                    matchNames2.add(i.getName2());
+                    mathchIds1.add(i.getUserid1());
+                    matchIds2.add(i.getUserid2());
+                }
 
+                reloadPage(matchNames1.remove(0), matchNames2.remove(0),mathchIds1.remove(0),matchIds2.remove(0));
+            }
 
-                        }else{
-                            Log.d(TAG, "Couldn't get list of matches. You aint got no friends");
-                            Toast.makeText(mContext, "Couldn't get list of matches. You aint got no friends", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "Couldn't get list of matches");
-                        Toast.makeText(mContext, "Couldn't get list of matches", Toast.LENGTH_SHORT).show();
-                    }
-                });
+            @Override
+            public void onFailure(Call<ArrayList<MatchObject>> call, Throwable t) {
+                Log.d(TAG, "Adding to Neo4j failed: " + t.toString());
+                Toast.makeText(mContext, "Couldn't get list of matches. You aint got no friends or something is wrong with server", Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -199,60 +234,93 @@ public class PairingFragment extends Fragment {
 
     //send confirm match data to database
     private void confirmMatch(String name1, String name2, String id1, String id2){
-        //firebase var
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        //firebase var
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+//        //create match info for both
+//        Map<String, Object> info1 = new HashMap<>();
+//        Map<String, Object> nestedData1 = new HashMap<>();
+//        nestedData1.put("name", name1);
+//        nestedData1.put("status", "pending");
+//        info1.put(id1, nestedData1);
+//
+//        //second match data
+//        Map<String, Object> info2 = new HashMap<>();
+//        Map<String, Object> nestedData2 = new HashMap<>();
+//        nestedData2.put("name", name2);
+//        nestedData2.put("status", "pending");
+//        info2.put(id2, nestedData2);
+//
+//        //insert friend request object for sender
+//        db.collection("match").document(id2)
+//                .set(info1, SetOptions.merge())
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "onSuccess: Document sucessfully written");
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "onFailure: Error writing document");
+//                    }
+//                });
+//
+//        //insert friend request object for reciever
+//        db.collection("match").document(id1)
+//                .set(info2, SetOptions.merge())
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "onSuccess: Document successfully written");
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        Log.d(TAG, "onFailure: Error writing document");
+//                    }
+//                });
 
-        //create match info for both
-        Map<String, Object> info1 = new HashMap<>();
-        Map<String, Object> nestedData1 = new HashMap<>();
-        nestedData1.put("name", name1);
-        nestedData1.put("status", "pending");
-        info1.put(id1, nestedData1);
+        endorseMatchObject endorseMatchObject = new endorseMatchObject(username, userid, name1, id1, name2, id2);
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance(mContext).create(GetDataService.class);
+        Call<String> call = service.sendMatchInfo(endorseMatchObject);
 
-        //second match data
-        Map<String, Object> info2 = new HashMap<>();
-        Map<String, Object> nestedData2 = new HashMap<>();
-        nestedData2.put("name", name2);
-        nestedData2.put("status", "pending");
-        info2.put(id2, nestedData2);
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: neo response successful" + response.toString());
+            }
 
-        //insert friend request object for sender
-        db.collection("match").document(id2)
-                .set(info1, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: Document sucessfully written");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: Error writing document");
-                    }
-                });
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(TAG, "Adding to Neo4j failed: " + t.toString());
+                Toast.makeText(mContext, "Couldn't get list of matches. You aint got no friends or something is wrong with server", Toast.LENGTH_SHORT).show();
+            }
+        });
 
-        //insert friend request object for reciever
-        db.collection("match").document(id1)
-                .set(info2, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: Document sucessfully written");
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, "onFailure: Error writing document");
-                    }
-                });
     }
 
     //send deny match data to database
     // TODO: 3/26/19 actually create this but not for firebase
     private void denyMatch(String name1, String name2, String id1, String id2){
+        endorseMatchObject endorseMatchObject = new endorseMatchObject(username, userid, name1, id1, name2, id2);
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance(mContext).create(GetDataService.class);
+        Call<String> call = service.denyMatchInfo(endorseMatchObject);
 
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.d(TAG, "onResponse: neo response successful" + response.toString());
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.d(TAG, "Adding to Neo4j failed: " + t.toString());
+                Toast.makeText(mContext, "Couldn't get list of matches. You aint got no friends or something is wrong with server", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

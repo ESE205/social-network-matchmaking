@@ -101,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity {
         String password = mPassword.getText().toString();
         String age = mAge.getText().toString();
         String city = mCity.getText().toString();
-        String gender = mGender.getSelectedItem().toString();
+        final String gender = mGender.getSelectedItem().toString();
         final String name = mUsername.getText().toString();
 
         final Map<String, Object> userinfo = new HashMap<>();
@@ -137,6 +137,7 @@ public class RegisterActivity extends AppCompatActivity {
                                         });
 
                                 User networkUser = new User(name, user.getUid());
+                                networkUser.setGender(gender);
                                 addToNeo(networkUser);
 
 

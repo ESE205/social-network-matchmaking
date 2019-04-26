@@ -96,6 +96,12 @@ public class AddFriendListAdapter extends RecyclerView.Adapter<AddFriendListAdap
                 Log.d(TAG, "Shared Preference Name: " + senderName);
                 if(senderName != null){
                     sendFriendRequest(mFriendNames.get(i),mFriendIDs.get(i),user.getUid(),senderName);
+                    Toast.makeText(mContext, "Sent Friend Request to " + mFriendNames.get(i), Toast.LENGTH_SHORT).show();
+                    mFriendNames.remove(i);
+                    mFriendIDs.remove(i);
+                    notifyItemRemoved(i);
+                    notifyItemRangeChanged(i, mFriendNames.size());
+
                 }else{
                     Log.d(TAG, "Friend add failed. Name is not shared in shared preference");
                     Toast.makeText(mContext, "Add Friend Failed", Toast.LENGTH_SHORT).show();

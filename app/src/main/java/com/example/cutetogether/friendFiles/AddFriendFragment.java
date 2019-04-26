@@ -122,23 +122,49 @@ public class AddFriendFragment extends Fragment {
     }
 
     private void getAddFriendList(){
-        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+//            @Override
+//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+//                if(task.isSuccessful()){
+//                    Log.d(TAG, "getting user list " + task.getResult().getDocuments().toString());
+//                    ArrayList<String> friends = new ArrayList<String>();
+//                    ArrayList<String> ids = new ArrayList<String>();
+//                    for(DocumentSnapshot document : task.getResult().getDocuments()){
+//                        if(!friends.contains(document.getId())){
+//                            friends.add(document.getString("name"));
+//                            ids.add(document.getId());
+//                        }
+//                    }
+//                    initAddRecyclerView(friends, ids);
+//                } else{
+//                    Log.d(TAG, "Error getting friends");
+//                }
+//            }
+//        });
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        User user1 = new User(sharedPreferences.getString("name", ""), user.getUid());
+        GetDataService service = RetrofitClientInstance.getRetrofitInstance(getContext()).create(GetDataService.class);
+        Call<ArrayList<User>> call = service.getSuggestedFriends(user1);
+
+        call.enqueue(new Callback<ArrayList<User>>() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if(task.isSuccessful()){
-                    Log.d(TAG, "getting user list " + task.getResult().getDocuments().toString());
-                    ArrayList<String> friends = new ArrayList<String>();
-                    ArrayList<String> ids = new ArrayList<String>();
-                    for(DocumentSnapshot document : task.getResult().getDocuments()){
-                        if(!friends.contains(document.getId())){
-                            friends.add(document.getString("name"));
-                            ids.add(document.getId());
-                        }
-                    }
-                    initAddRecyclerView(friends, ids);
-                } else{
-                    Log.d(TAG, "Error getting friends");
+            public void onResponse(Call<ArrayList<User>> call, Response<ArrayList<User>> response) {
+                Log.d(TAG, "onResponse: neo response successful" + response.toString());
+                Log.d(TAG, "onResponse: neo response " + response.body());
+                ArrayList<String> names = new ArrayList<String>();
+                ArrayList<String> ids = new ArrayList<String>();
+                for(User i : response.body()){
+                    names.add(i.getName());
+                    ids.add(i.getId());
                 }
+                initAddRecyclerView(names, ids);
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<User>> call, Throwable t) {
+                Log.d(TAG, "Adding to Neo4j failed: " + t.toString());
             }
         });
     }

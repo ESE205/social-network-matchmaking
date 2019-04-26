@@ -96,6 +96,11 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
             public void onClick(View v) {
                 if(userName != null){
                     acceptFriendRequest(mFriendNames.get(i),mFriendIDs.get(i),user.getUid(),userName);
+                    Toast.makeText(mContext, "Accepted " + mFriendNames.get(i), Toast.LENGTH_SHORT).show();
+                    mFriendNames.remove(i);
+                    mFriendIDs.remove(i);
+                    notifyItemRemoved(i);
+                    notifyItemRangeChanged(i, mFriendNames.size());
                 }else{
                     Log.d(TAG, "Friend add failed. Name is not shared in shared preference");
                     Toast.makeText(mContext, "Add Friend Failed", Toast.LENGTH_SHORT).show();
@@ -108,6 +113,11 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
             public void onClick(View v) {
                 if(userName != null){
                     denyFriendRequest(mFriendNames.get(i),mFriendIDs.get(i),user.getUid(),userName);
+                    Toast.makeText(mContext, "Denied " + mFriendNames.get(i), Toast.LENGTH_SHORT).show();
+                    mFriendNames.remove(i);
+                    mFriendIDs.remove(i);
+                    notifyItemRemoved(i);
+                    notifyItemRangeChanged(i, mFriendNames.size());
                 }else{
                     Log.d(TAG, "Friend deny failed. Name is not shared in shared preference");
                     Toast.makeText(mContext, "deny Friend Failed", Toast.LENGTH_SHORT).show();
@@ -135,14 +145,14 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "onSuccess: ");
-                        Toast.makeText(mContext, "Friend Added", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext, "Friend Added", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.d(TAG, "onFailure: ");
-                        Toast.makeText(mContext, "Friend Not Added", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext, "Friend Not Added", Toast.LENGTH_SHORT).show();
                     }
                 });
 

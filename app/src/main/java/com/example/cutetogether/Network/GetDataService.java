@@ -16,6 +16,9 @@ public interface GetDataService {
     @POST("friends/getfriends")
     Call<ArrayList<User>> getFriends(@Body User user);
 
+    @POST("friends/getsuggestedfriends")
+    Call<ArrayList<User>> getSuggestedFriends(@Body User user);
+
     @POST("friends/getrequests")
     Call<ArrayList<User>> getFriendRequest(@Body User user);
 

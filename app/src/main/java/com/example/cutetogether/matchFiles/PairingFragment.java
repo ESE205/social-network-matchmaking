@@ -192,8 +192,12 @@ public class PairingFragment extends Fragment {
                     mathchIds1.add(i.getUserid1());
                     matchIds2.add(i.getUserid2());
                 }
+                if(matchNames1.size()>0){
+                    reloadPage(matchNames1.remove(0), matchNames2.remove(0),mathchIds1.remove(0),matchIds2.remove(0));
+                }else{
+                    Toast.makeText(mContext, "Nobody to match", Toast.LENGTH_SHORT).show();
+                }
 
-                reloadPage(matchNames1.remove(0), matchNames2.remove(0),mathchIds1.remove(0),matchIds2.remove(0));
             }
 
             @Override

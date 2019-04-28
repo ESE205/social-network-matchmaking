@@ -80,67 +80,12 @@ public class AddFriendFragment extends Fragment {
         getAcceptFriendList();
         getAddFriendList();
 
-//        db.collection("users").document(user.getUid()).collection("friends").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    for(DocumentSnapshot document : task.getResult().getDocuments()){
-//                        friends.add(document.getString("name"));
-//                    }
-//
-//                    Log.d(TAG, "onComplete: get friends ");
-//                } else{
-//                    Log.d(TAG, "Error getting friends");
-//                }
-//            }
-//        });
-//
-//        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    Log.d(TAG, "getting user list " + task.getResult().getDocuments().toString());
-//                    for(DocumentSnapshot document : task.getResult().getDocuments()){
-//                        if(!friends.contains(document.getId())){
-//                            nonfriends.add(document.getString("name"));
-//                            nfid.add(document.getId());
-//                        }
-//
-//                    }
-//
-//                    Log.d(TAG, "onComplete: get friends " + nonfriends.toString());
-//                    initRecyclerView();
-//                } else{
-//                    Log.d(TAG, "Error getting friends");
-//                }
-//            }
-//        });
-
 
         return view;
 
     }
 
     private void getAddFriendList(){
-//        db.collection("users").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-//                if(task.isSuccessful()){
-//                    Log.d(TAG, "getting user list " + task.getResult().getDocuments().toString());
-//                    ArrayList<String> friends = new ArrayList<String>();
-//                    ArrayList<String> ids = new ArrayList<String>();
-//                    for(DocumentSnapshot document : task.getResult().getDocuments()){
-//                        if(!friends.contains(document.getId())){
-//                            friends.add(document.getString("name"));
-//                            ids.add(document.getId());
-//                        }
-//                    }
-//                    initAddRecyclerView(friends, ids);
-//                } else{
-//                    Log.d(TAG, "Error getting friends");
-//                }
-//            }
-//        });
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
@@ -170,47 +115,6 @@ public class AddFriendFragment extends Fragment {
     }
 
     private void getAcceptFriendList(){
-
-//        db.collection("friendrequests").document(user.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-//            @Override
-//            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-//                ArrayList<String> friends = new ArrayList<String>();
-//                ArrayList<String> ids = new ArrayList<String>();
-//                if(task.isSuccessful()){
-//                    Log.d(TAG, "onComplete: getaccept friend task successful");
-//                    DocumentSnapshot document = task.getResult();
-//                    if(document.exists()){
-//                        Log.d(TAG, "Friend Requests Document Found");
-//                        //get data and key values
-//                        Map<String, Object> data = document.getData();
-//                        Set<String> keys = data.keySet();
-//                        //parse data
-//                        Log.d(TAG, "friendrequests data: " + data.toString());
-//                        for(String key : keys){
-//                            String a = data.get(key).toString();
-//                            Map<String, String> value = Splitter.on(",").withKeyValueSeparator("=").split(a.substring(1, a.length()-1));
-//                            Log.d(TAG, "data: " + value.get("role"));
-//
-//                            if(value.get("role").equals("rec")){
-//                                Log.d(TAG, "got friend rec " + value.keySet().toString());
-//                                Log.d(TAG, "onComplete: " + value.toString());
-//                                Log.d(TAG, "onComplete: " + value.get("  name"));
-//                                Log.d(TAG, "onComplete: " + value.get(" name"));
-//                                Log.d(TAG, "onComplete: " + value.get("name"));
-//                                friends.add(value.get(" name"));
-//                                ids.add(key);
-//                            }
-//                        }
-//                        //start recycler view
-//                        initAcceptRecyclerView(friends, ids);
-//                    }else{
-//                        Log.d(TAG, "onComplete: ");
-//                    }
-//                }else{
-//                    Log.d(TAG, "Could not get user friendrequest document. " + task.getException());
-//                }
-//            }
-//        });
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         User user1 = new User(sharedPreferences.getString("name", ""), user.getUid());
@@ -264,9 +168,7 @@ public class AddFriendFragment extends Fragment {
     private void initRecyclerView() {
         Log.d(TAG, "initRecyclerView: started");
         Context context = getContext();
-        //AddFriendListAdapter adapter2 = new AddFriendListAdapter(nonfriends, img_urls, nfid, context);
-        //mAddFriendList.setAdapter(adapter2);
-        //mAddFriendList.setLayoutManager(new LinearLayoutManager(context));
+
     }
 
     private void initAddRecyclerView(ArrayList<String> names, ArrayList<String> ids){

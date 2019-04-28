@@ -171,22 +171,6 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
                     }
                 });
 
-//        db.collection("friendrequests").document(id)
-//                .update(acceptID, FieldValue.delete())
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "onSuccess: removed from friend request list");
-//                    }
-//                });
-//        db.collection("friendrequests").document(acceptID)
-//                .update(id, FieldValue.delete())
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "onSuccess: removed from friend request list");
-//                    }
-//                });
         User user = new User(acceptName, acceptID);
         User user2 = new User(name, id);
         ArrayList<User> data = new ArrayList<>();
@@ -210,26 +194,6 @@ public class AcceptFriendListAdapter extends RecyclerView.Adapter<AcceptFriendLi
     }
 
     private void denyFriendRequest(String name, String id, String denyId, String denyName){
-
-//        //firebase var
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//
-//        db.collection("friendrequests").document(id)
-//                .update(denyId, FieldValue.delete())
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "onSuccess: removed from friend request list");
-//                    }
-//                });
-//        db.collection("friendrequests").document(denyId)
-//                .update(id, FieldValue.delete())
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "onSuccess: removed from friend request list");
-//                    }
-//                });
 
         User user = new User(denyName, denyId);
         User user2 = new User(name, id);

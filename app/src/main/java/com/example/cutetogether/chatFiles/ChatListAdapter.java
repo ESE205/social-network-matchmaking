@@ -68,8 +68,6 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.Viewho
         viewholder.mRelativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Log.d(TAG, "onClick: clicked on: " + mFriendNames.get(i));
-                //mEventListener.friendClicked(mFriendId.get(i), mFriendNames.get(i));
                 mEventListener.chatClicked(mChatItems.get(i).getChatid());
             }
         });

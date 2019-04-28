@@ -115,9 +115,17 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
                         Log.d(TAG, "onClick: " + e.toString());
                     }
                 }else if(mStatus.get(i).equals("yes")){
+                    Toast.makeText(mContext, "Accepting Match. They Accepted too!", Toast.LENGTH_SHORT).show();
                     completeAcceptMatch(username, userid, mMatchNames.get(i), mMatchIds.get(i));
+                    mMatchNames.remove(i);
+                    mMatchIds.remove(i);
+                    mStatus.remove(i);
+                    mUserStatus.remove(i);
+                    notifyItemRemoved(i);
+                    notifyItemRangeChanged(i, mMatchNames.size());
                 }else{
                     acceptMatch(username, userid, mMatchNames.get(i), mMatchIds.get(i));
+                    Toast.makeText(mContext, "Accepting Match", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -126,6 +134,13 @@ public class MatchListAdapter extends RecyclerView.Adapter<MatchListAdapter.View
             @Override
             public void onClick(View v) {
                 denyMatch(username, userid, mMatchNames.get(i), mMatchIds.get(i));
+                Toast.makeText(mContext, "Denying Match", Toast.LENGTH_SHORT).show();
+                mMatchNames.remove(i);
+                mMatchIds.remove(i);
+                mStatus.remove(i);
+                mUserStatus.remove(i);
+                notifyItemRemoved(i);
+                notifyItemRangeChanged(i, mMatchNames.size());
             }
         });
 

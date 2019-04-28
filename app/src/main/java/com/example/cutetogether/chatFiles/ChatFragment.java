@@ -130,12 +130,6 @@ public class ChatFragment extends Fragment implements ChatAdapter.EventListener{
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, "onChildAdded: " + dataSnapshot.toString());
-
-//                for (DataSnapshot message : dataSnapshot.getChildren()){
-//                    MessageItem messageItem = message.getValue(MessageItem.class);
-//                    mMessageItems.add(messageItem);
-//                }
-
                 Log.d(TAG, "onChildAdded: " + dataSnapshot.getKey());
                 Log.d(TAG, "onChildAdded: " + dataSnapshot.getValue());
                 MessageItem messageItem = new MessageItem();

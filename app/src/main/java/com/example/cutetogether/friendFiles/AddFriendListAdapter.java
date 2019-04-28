@@ -118,57 +118,6 @@ public class AddFriendListAdapter extends RecyclerView.Adapter<AddFriendListAdap
 
     private void sendFriendRequest(String name, String id, String senderId, String senderName){
         Log.d(TAG, "onClick: clicked on add friend button");
-
-//        //firebase var
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//
-//        //create friend request send object
-//        Map<String, Object> friendinfo = new HashMap<>();
-//        Map<String, Object> nestedData = new HashMap<>();
-//        nestedData.put("name", name);
-//        nestedData.put("status", "pending");
-//        nestedData.put("role", "sender");
-//        friendinfo.put(id, nestedData);
-//
-//        //create friend request req object
-//        Map<String, Object> reqfriendinfo = new HashMap<>();
-//        Map<String, Object> reqnestedData = new HashMap<>();
-//        reqnestedData.put("name", senderName);
-//        reqnestedData.put("status", "pending");
-//        reqnestedData.put("role", "rec");
-//        reqfriendinfo.put(senderId, reqnestedData);
-//
-//        //insert friend request object for sender
-//        db.collection("friendrequests").document(senderId)
-//                .set(friendinfo, SetOptions.merge())
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "onSuccess: Document sucessfully written");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d(TAG, "onFailure: Error writing document");
-//                    }
-//                });
-//
-//        //insert friend request object for reciever
-//        db.collection("friendrequests").document(id)
-//                .set(reqfriendinfo, SetOptions.merge())
-//                .addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "onSuccess: Document sucessfully written");
-//                    }
-//                })
-//                .addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        Log.d(TAG, "onFailure: Error writing document");
-//                    }
-//                });
         User user = new User(senderName, senderId);
         User user2 = new User(name, id);
         ArrayList<User> data = new ArrayList<>();

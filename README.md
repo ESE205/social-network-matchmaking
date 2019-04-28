@@ -1,6 +1,7 @@
 # social-network-matchmaking
 
 Main branch contains android project directory
+
 Other branches include android projects I completed in preparation for building this app
 
 
